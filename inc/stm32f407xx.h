@@ -49,6 +49,12 @@
 #define I2C3_BASEADDR		(APB1_BASEADDR + 0x5C00)
 
 /* UART */
+#define USART1_BASEADDR		(APB2_BASEADDR + 0x1000)
+#define USART6_BASEADDR		(APB2_BASEADDR + 0x1400)
+#define USART2_BASEADDR		(APB1_BASEADDR + 0x4400)
+#define USART3_BASEADDR		(APB1_BASEADDR + 0x4800)
+#define UART4_BASEADDR		(APB1_BASEADDR + 0x4C00)
+#define UART5_BASEADDR		(APB1_BASEADDR + 0x5000)
 
 /******************* ARM Cortex M4 peripheral definition structures *********************/
 /*
@@ -170,8 +176,14 @@ typedef struct
  */
 typedef struct
 {
-
-} UART_RegDef_t;
+	__vo uint32_t USART_SR;			/*USART Status Register */
+	__vo uint32_t USART_DR;			/*USART Data Register */
+	__vo uint32_t USART_BRR;		/*USART Baudrate Register */
+	__vo uint32_t USART_CR1;		/*USART Control Register 1 */
+	__vo uint32_t USART_CR2;		/*USART Control Register 2 */
+	__vo uint32_t USART_CR3;		/*USART Control Register 3 */
+	__vo uint32_t USART_GTPR;		/*USART Guard time and prescaler Register */
+} USART_RegDef_t;
 
 /******************* Peripheral definition macros ******************/
 /* NVIC */
@@ -198,7 +210,13 @@ typedef struct
 #define I2C1		( (I2C_RegDef_t*)I2C1_BASEADDR)
 #define I2C2		( (I2C_RegDef_t*)I2C2_BASEADDR)
 #define I2C3		( (I2C_RegDef_t*)I2C3_BASEADDR)
-
+/* UART/USART */
+#define USART1		( (USART_RegDef_t*)USART1_BASEADDR)
+#define USART2		( (USART_RegDef_t*)USART2_BASEADDR)
+#define USART3		( (USART_RegDef_t*)USART3_BASEADDR)
+#define UART4		( (USART_RegDef_t*)UART4_BASEADDR)
+#define UART5		( (USART_RegDef_t*)UART5_BASEADDR)
+#define USART6		( (USART_RegDef_t*)USART6_BASEADDR)
 
 
 /******************* Peripheral clock enable/disable macros *********************/
@@ -239,8 +257,20 @@ typedef struct
 #define RCC_I2C2_CLK_DI() 	( RCC->RCC_APB1ENR &= ~(1 << 22))
 #define RCC_I2C3_CLK_DI() 	( RCC->RCC_APB1ENR &= ~(1 << 23))
 
+/* UART/USART clock enable/disable */
+#define RCC_USART1_CLK_EN()	( RCC->RCC_APB2ENR |= (1 << 4))
+#define RCC_USART6_CLK_EN()	( RCC->RCC_APB2ENR |= (1 << 5))
+#define RCC_USART2_CLK_EN()	( RCC->RCC_APB1ENR |= (1 << 17))
+#define RCC_USART3_CLK_EN()	( RCC->RCC_APB1ENR |= (1 << 18))
+#define RCC_UART4_CLK_EN()	( RCC->RCC_APB1ENR |= (1 << 19))
+#define RCC_UART5_CLK_EN()	( RCC->RCC_APB1ENR |= (1 << 20))
 
-
+#define RCC_USART1_CLK_DI()	( RCC->RCC_APB2ENR &= ~(1 << 4))
+#define RCC_USART6_CLK_DI()	( RCC->RCC_APB2ENR &= ~(1 << 5))
+#define RCC_USART2_CLK_DI()	( RCC->RCC_APB1ENR &= ~(1 << 17))
+#define RCC_USART3_CLK_DI()	( RCC->RCC_APB1ENR &= ~(1 << 18))
+#define RCC_UART4_CLK_DI()	( RCC->RCC_APB1ENR &= ~(1 << 19))
+#define RCC_UART5_CLK_DI()	( RCC->RCC_APB1ENR &= ~(1 << 20))
 
 /******************* Peripheral reset macros *********************/
 
@@ -265,6 +295,13 @@ typedef struct
 #define RCC_I2C2_RESET()	do{ (RCC->RCC_APB1RSTR |= (1 << 22)); (RCC->RCC_APB1RSTR &= ~(1 << 22)); }while(0)
 #define RCC_I2C3_RESET()	do{ (RCC->RCC_APB1RSTR |= (1 << 23)); (RCC->RCC_APB1RSTR &= ~(1 << 23)); }while(0)
 
+/* UART/USART reset */
+#define RCC_USART1_RESET()	do{ (RCC->RCC_APB2RSTR |= (1 << 4)); (RCC->RCC_APB2RSTR &= ~(1 << 4)); }while(0)
+#define RCC_USART6_RESET()	do{ (RCC->RCC_APB2RSTR |= (1 << 5)); (RCC->RCC_APB2RSTR &= ~(1 << 5)); }while(0)
+#define RCC_USART2_RESET()	do{ (RCC->RCC_APB1RSTR |= (1 << 17)); (RCC->RCC_APB1RSTR &= ~(1 << 17)); }while(0)
+#define RCC_USART3_RESET()	do{ (RCC->RCC_APB1RSTR |= (1 << 18)); (RCC->RCC_APB1RSTR &= ~(1 << 18)); }while(0)
+#define RCC_UART4_RESET()	do{ (RCC->RCC_APB1RSTR |= (1 << 19)); (RCC->RCC_APB1RSTR &= ~(1 << 19)); }while(0)
+#define RCC_UART5_RESET()	do{ (RCC->RCC_APB1RSTR |= (1 << 20)); (RCC->RCC_APB1RSTR &= ~(1 << 20)); }while(0)
 
 
 
@@ -293,6 +330,7 @@ typedef struct
 #define IRQ_NUM_USART3		39
 #define IRQ_NUM_UART4		52
 #define IRQ_NUM_UART5		53
+#define IRQ_NUM_USART6		71
 
 #define IRQ_PRIORIRY_0		0
 #define IRQ_PRIORITY_1		1
@@ -323,12 +361,32 @@ typedef struct
 
 
 /********************** RCC Peripheral Register Bit position macros *********************/
+/* RCC_CR register */
+#define RCC_CR_HSION			0
+#define RCC_CR_HSIRDY			1
+#define RCC_CR_HSEON			16
+#define RCC_CR_HSERDY			17
+#define RCC_CR_PLLON			24
+#define RCC_CR_PLLRDY			25
+
+/* RCC_PLLCFGR register */
+#define RCC_PLLCFGR_PLLM		0
+#define RCC_PLLCFGR_PLLN		6
+#define RCC_PLLCFGR_PLLP		16
+#define RCC_PLLCFGR_PLLSRC		22
+#define RCC_PLLCFGR_PLLQ		24
+
+
 /* RCC_CFGR register */
 #define RCC_CFGR_SW				0
 #define RCC_CFGR_SWS			2
 #define RCC_CFGR_HRPE			4	// AHB prescaler
 #define RCC_CFGR_PPRE1			10	// APB1 prescaler
 #define RCC_CFGR_PPRE2			13	// APB2 prescaler
+#define RCC_CFGR_MCO1			21
+#define RCC_CFGR_MCO1PRE		24
+#define RCC_CFGR_MCO2PRE		27
+#define RCC_CFGR_MCO2			30
 
 
 /********************** SPI Peripheral Register Bit position macros *********************/
@@ -409,7 +467,66 @@ typedef struct
 #define I2C_CCR_FS				15	// Master mode selection: standard/fast
 
 
+/********************** UART/USART Peripheral Register Bit position macros *********************/
+/* USART_SR */
+#define USART_SR_PE				0	// Parity error
+#define USART_SR_FE				1	// Framing error
+#define USART_SR_NF				2	// Noise detected flag
+#define USART_SR_ORE			3	// Overrun error
+#define USART_SR_IDLE			4	// IDLE line detected
+#define USART_SR_RXNE			5	// RXNE
+#define USART_SR_TC				6	// Transmission complete
+#define USART_SR_TXE			7	// TXE
+#define USART_SR_LBD			8
+#define USART_SR_CTS			9	// CTS flag
 
+/* USART_DR */
+
+/* USART_BRR */
+#define USART_BRR_DIV_Fraction	0
+#define USART_BRR_DIV_Mantissa	4
+
+/* USART_CR1 */
+#define USART_CR1_SBK			0	// Send break
+#define USART_CR1_RWU			1	// Receiver wakeup
+#define USART_CR1_RE			2	// Receiver mode
+#define USART_CR1_TE			3	// Transmitter mode
+#define USART_CR1_IDLEIE		4	// IDLE interrupt enable
+#define USART_CR1_RXNEIE		5	// RXNE interrupt enable
+#define USART_CR1_TCIE			6	// Transmission complete interrupt enable
+#define USART_CR1_TXEIE			7	// TXE interrupt enable
+#define USART_CR1_PEIE			8	// PE (parity error) interrupt enable
+#define USART_CR1_PS			9	// Parity selection
+#define USART_CR1_PCE			10	// Parity control enable
+#define USART_CR1_WAKE			11
+#define USART_CR1_M				12	// Word length
+#define USART_CR1_UE			13	// USART enable
+#define USART_CR1_OVER8			15	// Oversampling mode: 16 or 8
+
+/* USART_CR2 */
+#define USART_CR2_ADD			0	// Address of the USART node
+#define USART_CR2_LBDL			5	// (not use)LIN break detection length
+#define USART_CR2_LBDIE			6	// (not use)LIN break detection interrupt enable
+#define USART_CR2_LBCL			8	// Last bit clock pulse
+#define USART_CR2_CPHA			9	// Clock phase
+#define USART_CR2_CPOL			10	// Clock polarity
+#define USART_CR2_CLKEN			11	// Clock enable (CK pin)
+#define USART_CR2_STOP			12	// number of STOP bit
+#define USART_CR2_LINEN			14	// (not use)Lin mode enable
+
+/* USART_CR3 */
+#define USART_CR3_EIE			0	// Error interrupt enable
+#define USART_CR3_IREN			1	// (not use)IrDA mode enable
+#define USART_CR3_IRLP			2	// (not use)IrDA low-power
+#define USART_CR3_HDSEL			3	// (not use)Half-duplex selection
+#define USART_CR3_NACK			4	// (not use)Smartcard NACK enable
+#define USART_CR3_SCEN			5	// (not use)Smartcard mode enable
+#define USART_CR3_DMAR			6	// (not use)DMA enable receiver
+#define USART_CR3_DMAT			7	// (not use)DMA enable transmitter
+#define USART_CR3_RTSE			8	// RTS enable
+#define USART_CR3_CTSE			9	// CTS enable
+#define USART_CR3_CTSIE			10	// CTS interrupt enable
+#define USART_CR3_ONEBIT		11	// One sample bit method enable
 
 
 /******************* Others ******************************/
@@ -430,12 +547,12 @@ typedef struct
 #define FLAG_SET		ENABLE
 #define FLAG_NOT_SET 	DISABLE
 
-// include this make user app won't need to include every single driver
+// include this make user application need not to include every single driver
 
 #include "stm32f407xx_gpio.h"	// GPIO driver header file
 #include "stm32f407xx_spi.h"	// SPI driver header file
 #include "stm32f407xx_i2c.h"	// I2C driver header file
-
+#include "stm32f407xx_uart.h"	// UART driver header file
 #include "stm32f407xx_rcc.h"	// RCC driver header file
 
 #endif /* INC_STM32F407XX_H_ */
